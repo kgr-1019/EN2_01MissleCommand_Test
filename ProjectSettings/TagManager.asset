@@ -9,6 +9,7 @@ TagManager:
   - Missile
   - Tower
   - SpawnPoint
+  - Explosion
   layers:
   - Default
   - TransparentFX

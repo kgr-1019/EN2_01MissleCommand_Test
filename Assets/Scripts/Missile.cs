@@ -7,29 +7,25 @@ public class Missile : MonoBehaviour
 {
     public Vector2 targetPosition;// ミサイルが飛んでいく場所
     public float speed = 5f; // ミサイルの移動速度
-    
+    private Vector3 direction; // ミサイルの移動方向
+    private GameObject reticle; // レティクルオブジェクトへの参照
+    public GameObject explosionPrefab; // 爆発プレハブへの参照
+
 
     // Start is called before the first frame update
     void Start()
     {
-        // マウスの位置を取得
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // ミサイルの目標位置をマウス位置に設定
-        targetPosition = mousePosition;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        // ミサイル移動
-        MoveToTarget();
-    }
-
-    private void MoveToTarget()
-    {
         // 現在の位置から目的地への方向を計算
-        Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
+        //direction = (targetPosition - (Vector2)transform.position).normalized;
+
+        // 現在位置から目的地への方向を取得
+        direction = GetDirection(transform.position, targetPosition);
 
         // 移動
         transform.position += (Vector3)(direction * speed * Time.deltaTime);
@@ -45,10 +41,34 @@ public class Missile : MonoBehaviour
         // 目的地に達したら
         if (Vector2.Distance(transform.position, targetPosition) < 0.1f)
         {
+            // 爆発を生成
+            if (explosionPrefab != null)
+            {
+                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            }
+
+            // レティクルを消す
+            if (reticle != null)
+            {
+                Destroy(reticle);
+            }
+
             // ミサイルを消す
             Destroy(gameObject);
         }
     }
 
-    
+    // ミサイルの目的地への方向を計算する関数
+    private Vector3 GetDirection(Vector3 currentPosition, Vector2 targetPosition)
+    {
+        // 現在の位置から目的地への方向を計算
+        Vector3 direction = (targetPosition - (Vector2)currentPosition).normalized;
+        return direction;
+    }
+
+    // レティクルオブジェクトを設定するための関数
+    public void SetReticle(GameObject reticleObject)
+    {
+        this.reticle = reticleObject;
+    }
 }
