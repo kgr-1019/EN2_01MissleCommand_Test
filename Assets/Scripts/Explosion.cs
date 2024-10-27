@@ -6,14 +6,7 @@ public class Explosion : MonoBehaviour
 {
     public float scaleSpeed = 0.1f; // 拡大する速度
     public float maxScale = 3.0f;    // 最大スケール
-    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
+   
     // Update is called once per frame
     void Update()
     {
@@ -29,7 +22,7 @@ public class Explosion : MonoBehaviour
         if (newScale.x < maxScale) newScale.x += scaleSpeed * Time.deltaTime;
         if (newScale.y < maxScale) newScale.y += scaleSpeed * Time.deltaTime;
 
-        // 適用
+        // 更新されたスケールの適用
         transform.localScale = newScale;
 
         // スケールが最大値を超えたら削除

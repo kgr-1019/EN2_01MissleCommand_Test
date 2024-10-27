@@ -6,13 +6,6 @@ public class Reticle : MonoBehaviour
 {
     public float rotationSpeed; // 1•b“–‚½‚è‚Ì‰ñ“]“x”
     
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {

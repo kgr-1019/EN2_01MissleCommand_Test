@@ -18,9 +18,6 @@ public class GameManager : MonoBehaviour
     float groundHp;// 現在のHP
     public Score score; // Scoreクラスの参照
     private bool isGameOver = false; // ゲームオーバーフラグ
-    //[SerializeField] private Image fadeImage; // フェード用のImage
-    //private float fadeDuration = 5f; // フェードにかかる時間
-    //private bool isFading = false; // フェード中かどうかのフラグ
     public FadeManager fadeManager; // FadeManagerの参照
 
     // Start is called before the first frame update
@@ -36,6 +33,7 @@ public class GameManager : MonoBehaviour
 
         // "SpawnPoint"タグを持つ全てのオブジェクトを検索してリストに追加
         GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+
         // spawnPointの数だけループする
         foreach (GameObject point in spawnPoints)
         {
@@ -133,7 +131,9 @@ public class GameManager : MonoBehaviour
     {
         groundHp -= amount;
 
-        slider.value = (float)groundHp;//HPをSliderに反映
+        //HPをSliderに反映
+        slider.value = (float)groundHp;
+
         // HPが0未満にならないように制限
         if (groundHp < 0)
         {
@@ -157,41 +157,8 @@ public class GameManager : MonoBehaviour
         if (groundHp <= 0)
         {
             isGameOver = true;
-            fadeManager.FadeIn(); // FadeManagerのFadeInメソッドを呼び出す
-            //StartCoroutine(FadeIn());
+            fadeManager.FadeIn(); // FadeManagerのFadeIn関数を呼び出す
         }
     }
 
-    //private IEnumerator FadeIn()
-    //{
-    //    isFading = true;
-
-    //    // Imageを表示させて、最初は表示しない
-    //    fadeImage.gameObject.SetActive(true);
-
-    //    // 初期透明度を0にする
-    //    Color color = fadeImage.color;
-    //    color.a = 0;
-
-    //    // 現在の色を取得し、アルファ値を変更して再設定
-    //    fadeImage.color = color;
-
-    //    float elapsedTime = 0;
-    //    // フェードイン処理
-    //    while (elapsedTime < fadeDuration)
-    //    {
-    //        // elapsedTimeに現在のフレームが経過した時間（Time.deltaTime）を加算
-    //        elapsedTime += Time.deltaTime;
-
-    //        // アルファ値更新
-    //        // アルファ値が負の値や1を超えないようにする
-    //        color.a = Mathf.Clamp01(elapsedTime / fadeDuration);
-
-    //        // 更新されたアルファ値を設定する
-    //        fadeImage.color = color;
-
-    //        // 次のフレームを待つ
-    //        yield return null;
-    //    }
-    //}
 }

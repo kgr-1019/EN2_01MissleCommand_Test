@@ -11,15 +11,16 @@ public class Tower : MonoBehaviour
     private float coolTime = 3.0f; // クールタイム
     private float lastShotTime; // 最後にミサイルを発射した時間
     public bool isShot = true;// 撃てるかどうかのフラグ
-    private int maxHP = 100; // 最大HP
+    private int maxHP = 10; // 最大HP
     private int currentHP; // 現在のHP
-    //public int priority; // 優先順位
+    private Color originalColor; // 元の色を保存するための変数
 
     // Start is called before the first frame update
     void Start()
     {
         lastShotTime = -coolTime; // 初期設定で既に発射可能状態にする
         currentHP = maxHP; // 現在のHPを最大HPで初期化
+        originalColor = towerRenderer.material.color; // 元の色を保存
     }
 
     // Update is called once per frame
@@ -29,6 +30,13 @@ public class Tower : MonoBehaviour
         if (Time.time >= lastShotTime + coolTime)
         {
             isShot = true; // クールタイムが過ぎたら発射可能
+            towerRenderer.material.color = originalColor; // 色を元に戻す
+        }
+        else
+        {
+            // クールタイム中の色の変化
+            float t = (Time.time - lastShotTime) / coolTime; // 0?1の範囲に正規化
+            towerRenderer.material.color = Color.Lerp(Color.red, originalColor, t); // 色を補間
         }
     }
 
@@ -61,7 +69,7 @@ public class Tower : MonoBehaviour
         if (collider.CompareTag("Meteor"))
         {
             // HPを減らす
-            currentHP -= 40;
+            currentHP -= 4;
 
             // HPが0になったらタワーを削除
             if (currentHP <= 0)

@@ -32,8 +32,7 @@ public class FadeManager : MonoBehaviour
         // 現在の色を取得し、アルファ値を変更して再設定
         fadeImage.color = color;
 
-        // フェード経過時間
-        float elapsedTime = 0;
+        float elapsedTime = 0;// フェード経過時間
 
         // フェードイン処理
         while (elapsedTime < fadeDuration)
@@ -42,14 +41,13 @@ public class FadeManager : MonoBehaviour
             elapsedTime += Time.deltaTime;
 
             // アルファ値更新
-            //        // アルファ値が負の値や1を超えないようにする
+            // アルファ値が負の値や1を超えないようにする
             color.a = Mathf.Clamp01(elapsedTime / fadeDuration);
 
             // 更新されたアルファ値を設定する
             fadeImage.color = color;
 
-            // 次のフレームを待つ
-            yield return null;
+            yield return null;// 次のフレームを待つ
         }
 
         // フェード処理が完了したらフラグをリセット

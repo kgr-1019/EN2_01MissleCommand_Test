@@ -46,11 +46,9 @@ public class Meteor : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Ground"))
         {
-            // カメラを揺らす
-            gameManager.StartCameraShake(0.5f,0.5f);
+            gameManager.StartCameraShake(0.5f,0.5f);// カメラを揺らす
 
-            // メテオを破壊する
-            Destroy(gameObject);
+            Destroy(gameObject);// メテオを破壊する
         }
         
         if (collider.gameObject.CompareTag("Explosion"))
@@ -60,8 +58,7 @@ public class Meteor : MonoBehaviour
 
             gameManager.AddScore(100); // スコアを加算
 
-            // メテオを破壊する
-            Destroy(gameObject);
+            Destroy(gameObject);// メテオを破壊する
         }
     }
 }

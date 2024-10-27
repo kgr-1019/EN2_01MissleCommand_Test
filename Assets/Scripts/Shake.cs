@@ -32,7 +32,7 @@ public class Shake : MonoBehaviour
             // カメラの新しい位置を設定
             transform.localPosition = originalPosition + shakeOffset;
 
-            // 経過時間を減少
+            // 経過時間を減少させる
             shakeTime -= Time.deltaTime;
         }
         else

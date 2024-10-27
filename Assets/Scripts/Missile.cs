@@ -21,9 +21,6 @@ public class Missile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 現在の位置から目的地への方向を計算
-        //direction = (targetPosition - (Vector2)transform.position).normalized;
-
         // 現在位置から目的地への方向を取得
         direction = GetDirection(transform.position, targetPosition);
 
@@ -41,15 +38,15 @@ public class Missile : MonoBehaviour
         // 目的地に達したら
         if (Vector2.Distance(transform.position, targetPosition) < 0.1f)
         {
-            // 爆発を生成
             if (explosionPrefab != null)
             {
+                // 爆発を生成
                 Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             }
 
-            // レティクルを消す
             if (reticle != null)
             {
+                // レティクルを消す
                 Destroy(reticle);
             }
 
