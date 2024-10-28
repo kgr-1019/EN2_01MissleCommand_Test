@@ -9,6 +9,11 @@ public class FadeManager : MonoBehaviour
     private float fadeDuration = 5f; // フェードにかかる時間
     private bool isFading = false; // フェード中かどうかのフラグ
 
+    public bool IsFading
+    {
+        get { return isFading; }
+    }
+
     // フェードインの関数
     public void FadeIn()
     {
@@ -50,6 +55,9 @@ public class FadeManager : MonoBehaviour
             yield return null;// 次のフレームを待つ
         }
 
+        // フェード完了後にアルファを1に設定
+        color.a = 1;
+        fadeImage.color = color;
         // フェード処理が完了したらフラグをリセット
         isFading = false;
     }

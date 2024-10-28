@@ -83,7 +83,10 @@ public class Tower : MonoBehaviour
                     Instantiate(explosionPillarPrefab, transform.position, Quaternion.identity);
                 }
 
-                Destroy(gameObject); // 自身を削除
+                //Destroy(gameObject); // 自身を削除
+
+                // タワーを非表示にする
+                gameObject.SetActive(false); // 自身を非表示にする
 
                 // タワーをGameManagerから削除
                 gameManager.RemoveTower(this);
@@ -92,5 +95,11 @@ public class Tower : MonoBehaviour
             // メテオを破壊する
             Destroy(collider.gameObject);
         }
+    }
+
+    public void ResetTower()
+    {
+        currentHP = maxHP; // HPを最大に戻す
+        gameObject.SetActive(true); // タワーを再表示
     }
 }
