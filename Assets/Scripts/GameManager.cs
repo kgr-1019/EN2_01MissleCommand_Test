@@ -26,7 +26,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pushResetText; // Push Reset テキスト
     private bool finishFadeIn = false;
     [SerializeField] public GameObject explosion;// 爆発
-    private bool isSpawnExplosions = false; // 爆発を生成中かどうかのフラグ
+    private float explosionSpawnTimer = 0f; // 次の爆発を生成するまでのタイミング
+    private bool spawnExplosions = false; // 爆発生成を開始するフラグ
 
     // Start is called before the first frame update
     void Start()
@@ -114,6 +115,62 @@ public class GameManager : MonoBehaviour
 
         // ゲームオーバー判定
         CheckGameOver();
+
+
+        // 爆発を生成するための処理
+        if (isGameOver && !spawnExplosions)
+        {
+            spawnExplosions = true;
+            explosionSpawnTimer = 0f; // タイマーをリセット
+        }
+
+        // 画面内に爆発ランダム生成
+        if (spawnExplosions)
+        {
+            // 爆発生成の時間を進める
+            explosionSpawnTimer += Time.deltaTime;
+
+            // 設定した間隔に達したら爆発を生成
+            if (explosionSpawnTimer >= 0.1f) // 0.1秒ごとに生成
+            {
+                SpawnExplosions();
+                explosionSpawnTimer = 0f; // 次の爆発のためにタイマーをリセット
+            }
+        }
+
+        // フェードインが完了した時にテキストを表示
+        if (isGameOver && !finishFadeIn && !fadeManager.IsFading)
+        {
+            // Game Over テキストを表示
+            gameOverText.gameObject.SetActive(true);
+
+            // スコアを取得して表示
+            int finalScore = score.GetScore();
+            resultScoreText.text = "Score : " + finalScore.ToString("d7");
+            resultScoreText.gameObject.SetActive(true);
+
+            // Push Reset テキストを表示
+            pushResetText.gameObject.SetActive(true);
+
+            finishFadeIn = true;
+        }
+    }
+
+    private void SpawnExplosions()
+    {
+        // ビューポートのランダムな位置を計算
+        float randomX = Random.Range(0f, 1f); // 0から1の範囲でランダムなX値
+        float randomY = Random.Range(0f, 1f); // 0から1の範囲でランダムなY値
+
+        // ランダムな端の位置を決定
+        Vector3 randomViewportPoint = new Vector3(randomX, randomY, 0);
+        Vector3 worldPosition = Camera.main.ViewportToWorldPoint(randomViewportPoint);
+
+        // Z軸は0にする
+        worldPosition.z = 0;
+
+        // 爆発を生成
+        Instantiate(explosion, worldPosition, Quaternion.identity);
     }
 
 
@@ -134,35 +191,6 @@ public class GameManager : MonoBehaviour
         meteorObj.SetUP(ground,this);
     }
 
-    private IEnumerator SpawnExplosions()
-    {
-        isSpawnExplosions = true;
-
-        // 定義した爆発の数
-        int explosionCount = 10;
-
-        for (int i = 0; i < explosionCount; i++)
-        {
-            // ビューポートのランダムな位置を計算
-            float randomX = Random.Range(0f, 1f); // 0から1の範囲でランダムなX値
-            float randomY = Random.Range(0f, 1f); // 0から1の範囲でランダムなY値
-
-            // ランダムな端の位置を決定
-            Vector3 randomViewportPoint = new Vector3(randomX, randomY, 0);
-            Vector3 worldPosition = Camera.main.ViewportToWorldPoint(randomViewportPoint);
-            
-            // Z軸は0にする
-            worldPosition.z = 0;
-
-            // 爆発を生成
-            Instantiate(explosion, worldPosition, Quaternion.identity);
-
-            // 少し待機
-            yield return new WaitForSeconds(0.1f); // 0.1秒ごとに生成
-        }
-
-        isSpawnExplosions = false; // 爆発生成完了
-    }
 
     // タワーをリストから削除する関数
     public void RemoveTower(Tower towerToRemove)
@@ -214,37 +242,8 @@ public class GameManager : MonoBehaviour
         {
             isGameOver = true;
             fadeManager.FadeIn(); // FadeManagerのFadeIn関数を呼び出す
-
-            // ゲームオーバー時に爆発を生成
-            StartCoroutine(SpawnExplosions());
-
-            // フェードイン終了後にテキストを表示
-            StartCoroutine(ShowGameOverText());
         }
     }
-
-    private IEnumerator ShowGameOverText()
-    {
-        // FadeInメソッドが完了するのを待つ
-        while (fadeManager.IsFading)
-        {
-            yield return null; // 次のフレームを待つ
-        }
-
-        // Game Over テキストを表示
-        gameOverText.gameObject.SetActive(true);
-
-        // スコアを取得して表示
-        int finalScore = score.GetScore();
-        resultScoreText.text = "Score : " + finalScore.ToString("d7");
-        resultScoreText.gameObject.SetActive(true);
-
-        // Push Reset テキストを表示
-        pushResetText.gameObject.SetActive(true);
-
-        finishFadeIn = true;
-    }
-
     
 
     private void ResetGame()

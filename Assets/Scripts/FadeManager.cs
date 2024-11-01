@@ -8,6 +8,7 @@ public class FadeManager : MonoBehaviour
     [SerializeField] private Image fadeImage; // フェード用のImage
     private float fadeDuration = 5f; // フェードにかかる時間
     private bool isFading = false; // フェード中かどうかのフラグ
+    private float fadeElapsedTime = 0f; // フェード経過時間
 
     public bool IsFading
     {
@@ -17,48 +18,48 @@ public class FadeManager : MonoBehaviour
     // フェードインの関数
     public void FadeIn()
     {
+
         if (!isFading)
         {
-            StartCoroutine(FadeInCoroutine());
+            isFading = true;
+
+            // Imageを表示させて、最初は表示しない
+            fadeImage.gameObject.SetActive(true);
+
+            // 初期透明度を0にする
+            Color color = fadeImage.color;
+            color.a = 0;
+            fadeImage.color = color;
+
+            fadeElapsedTime = 0f; // フェード時間をリセット
         }
     }
 
-    private IEnumerator FadeInCoroutine()
+    void Update()
     {
-        isFading = true;
-
-        // Imageを表示させて、最初は表示しない
-        fadeImage.gameObject.SetActive(true);
-
-        // 初期透明度を0にする
-        Color color = fadeImage.color;
-        color.a = 0;
-
-        // 現在の色を取得し、アルファ値を変更して再設定
-        fadeImage.color = color;
-
-        float elapsedTime = 0;// フェード経過時間
-
-        // フェードイン処理
-        while (elapsedTime < fadeDuration)
+        if (isFading)
         {
-            // elapsedTimeに現在のフレームが経過した時間（Time.deltaTime）を加算
-            elapsedTime += Time.deltaTime;
+            // フェード処理の進行
+            fadeElapsedTime += Time.deltaTime;
 
-            // アルファ値更新
+            // アルファ値を更新
             // アルファ値が負の値や1を超えないようにする
-            color.a = Mathf.Clamp01(elapsedTime / fadeDuration);
+            Color color = fadeImage.color;
+            color.a = Mathf.Clamp01(fadeElapsedTime / fadeDuration);
 
             // 更新されたアルファ値を設定する
             fadeImage.color = color;
 
-            yield return null;// 次のフレームを待つ
-        }
+            // フェードが完了したら
+            if (fadeElapsedTime >= fadeDuration)
+            {
+                // フェード完了後にアルファを1に設定
+                color.a = 1;
+                fadeImage.color = color;
 
-        // フェード完了後にアルファを1に設定
-        color.a = 1;
-        fadeImage.color = color;
-        // フェード処理が完了したらフラグをリセット
-        isFading = false;
+                // フェード処理が完了したらフラグをリセット
+                isFading = false;
+            }
+        }
     }
 }
